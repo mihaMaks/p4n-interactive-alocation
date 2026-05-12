@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Mesh From Map Area — P4NA Location</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: #0e0e1a; color: #e0e0e0; }
+
+        #map { position: fixed; inset: 0; z-index: 0; }
+
+        /* ── Floating side panel ──────────────────────── */
+        #panel {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            width: 340px;
+            max-height: calc(100vh - 32px);
+            overflow-y: auto;
+            background: rgba(14, 14, 26, 0.92);
+            backdrop-filter: blur(12px);
+            border: 1px solid #2a2a3e;
+            border-radius: 12px;
+            padding: 20px;
+            z-index: 1000;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        }
+        #panel h2 {
+            font-size: 16px;
+            margin-bottom: 14px;
+            color: #fff;
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            color: #9ca3af;
+            margin-bottom: 4px;
+        }
+        .form-group input[type="file"] {
+            font-size: 12px;
+            color: #aaa;
+        }
+        .form-group select,
+        .form-group input[type="text"] {
+            width: 100%;
+            background: #1a1a2e;
+            border: 1px solid #333;
+            color: #e0e0e0;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+        .btn-primary, .btn-secondary {
+            display: inline-block;
+            width: 100%;
+            padding: 8px 14px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 4px;
+            transition: background 0.15s;
+        }
+        .btn-primary { background: #667eea; color: #fff; }
+        .btn-primary:hover { background: #5a6fd6; }
+        .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+        .btn-secondary { background: #2a2a3e; color: #ccc; }
+        .btn-secondary:hover { background: #333350; }
+        .hint { font-size: 12px; color: #666; font-style: italic; }
+        .status { font-size: 12px; margin-top: 6px; color: #aaa; }
+        hr { border: none; border-top: 1px solid #333; margin: 14px 0; }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 10px;
+            color: #667eea;
+            text-decoration: none;
+            font-size: 13px;
+        }
+        .back-link:hover { text-decoration: underline; }
+
+        /* ── Search bar (top-left) ────────────────────── */
+        #search-container {
+            position: fixed;
+            top: 16px;
+            left: 60px;
+            z-index: 1000;
+            display: flex;
+            gap: 6px;
+        }
+        #search-input {
+            width: 300px;
+            padding: 8px 12px;
+            border: 1px solid #2a2a3e;
+            border-radius: 8px;
+            background: rgba(14, 14, 26, 0.92);
+            backdrop-filter: blur(12px);
+            color: #e0e0e0;
+            font-size: 14px;
+            outline: none;
+        }
+        #search-input::placeholder { color: #666; }
+        #search-input:focus { border-color: #667eea; }
+        #search-results {
+            position: absolute;
+            top: 40px;
+            left: 0;
+            width: 300px;
+            background: rgba(14, 14, 26, 0.95);
+            border: 1px solid #2a2a3e;
+            border-radius: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+        }
+        .search-result-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 13px;
+            border-bottom: 1px solid #222;
+        }
+        .search-result-item:hover { background: #22223a; }
+        .search-result-item:last-child { border-bottom: none; }
+    </style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<!-- Search bar -->
+<div id="search-container">
+    <input type="text" id="search-input" placeholder="Search for a place…" autocomplete="off">
+    <div id="search-results"></div>
+</div>
+
+<!-- Floating control panel -->
+<div id="panel">
+    <a href="index.html" class="back-link">← Back to viewer</a>
+    <h2>Create Mesh From Map Area</h2>
+
+    <div class="form-group">
+        <label>Upload Point Cloud (.laz / .las)</label>
+        <input type="file" id="map-pc-file-input" accept=".laz,.las">
+    </div>
+    <button class="btn-primary" id="map-pc-upload-btn">Upload Point Cloud</button>
+    <div class="status" id="map-upload-status">Upload a point cloud, then draw an area on the map.</div>
+
+    <hr>
+    <p class="hint">Draw a polygon or rectangle on the map to define the area.</p>
+    <button class="btn-secondary" id="map-check-area-btn" style="margin-top:8px">Check Selected Area</button>
+    <div class="status" id="map-check-status"></div>
+
+    <hr>
+    <div class="form-group">
+        <label>Mesh Algorithm</label>
+        <select id="map-mesh-algo">
+            <option value="poisson">Poisson Reconstruction</option>
+            <option value="ball_pivoting">Ball Pivoting</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Mesh Description (optional)</label>
+        <input type="text" id="map-mesh-desc" placeholder="e.g. Parking lot north">
+    </div>
+    <button class="btn-primary" id="map-generate-mesh-btn" disabled>Generate Mesh From Selected Area</button>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+<script>
+(function () {
+    // ── Auth ─────────────────────────────────────────────
+    const params = new URLSearchParams(location.search);
+    const accessCode = params.get('code') || '';
+    if (!accessCode) {
+        alert('No access code provided. Redirecting to main app.');
+        location.href = 'index.html';
+        return;
+    }
+
+    function api(path, opts = {}) {
+        const headers = { 'X-Access-Code': accessCode, ...(opts.headers || {}) };
+        return fetch(path, { ...opts, headers });
+    }
+
+    // ── Map setup ────────────────────────────────────────
+    const map = L.map('map').setView([46.261, 14.205], 15);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 20,
+        attribution: '&copy; OpenStreetMap contributors',
+    }).addTo(map);
+
+    const drawnLayer = new L.FeatureGroup();
+    map.addLayer(drawnLayer);
+
+    const drawControl = new L.Control.Draw({
+        edit: { featureGroup: drawnLayer, remove: true },
+        draw: {
+            polygon: true,
+            rectangle: true,
+            polyline: false,
+            circle: false,
+            circlemarker: false,
+            marker: false,
+        },
+    });
+    map.addControl(drawControl);
+
+    let polygon = null;
+    let pointCloudPath = null;
+
+    function layerToPolygon(layer) {
+        const latlngs = layer.getLatLngs();
+        const ring = Array.isArray(latlngs[0]) ? latlngs[0] : latlngs;
+        return ring.map(p => [p.lat, p.lng]);
+    }
+
+    map.on(L.Draw.Event.CREATED, (evt) => {
+        drawnLayer.clearLayers();
+        drawnLayer.addLayer(evt.layer);
+        polygon = layerToPolygon(evt.layer);
+        setCheckStatus('Area selected. Click "Check Selected Area".', 'ok');
+    });
+    map.on(L.Draw.Event.EDITED, (evt) => {
+        const layers = evt.layers.getLayers();
+        if (!layers.length) return;
+        polygon = layerToPolygon(layers[0]);
+        setCheckStatus('Area updated. Re-run area check.', 'ok');
+    });
+    map.on(L.Draw.Event.DELETED, () => {
+        polygon = null;
+        setCheckStatus('Area removed. Draw a new area.', 'warn');
+        document.getElementById('map-generate-mesh-btn').disabled = true;
+    });
+
+    // ── Place search (Nominatim) ─────────────────────────
+    const searchInput = document.getElementById('search-input');
+    const searchResults = document.getElementById('search-results');
+    let searchTimer = null;
+
+    searchInput.addEventListener('input', () => {
+        clearTimeout(searchTimer);
+        const q = searchInput.value.trim();
+        if (q.length < 3) { searchResults.style.display = 'none'; return; }
+        searchTimer = setTimeout(() => searchPlace(q), 400);
+    });
+
+    searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') searchResults.style.display = 'none';
+    });
+
+    async function searchPlace(q) {
+        try {
+            const res = await fetch(
+                `https://nominatim.openstreetmap.org/search?format=json&limit=5&q=${encodeURIComponent(q)}`,
+                { headers: { 'Accept-Language': 'en' } }
+            );
+            const data = await res.json();
+            if (!data.length) {
+                searchResults.innerHTML = '<div class="search-result-item" style="color:#666">No results</div>';
+                searchResults.style.display = 'block';
+                return;
+            }
+            searchResults.innerHTML = data.map((r, i) =>
+                `<div class="search-result-item" data-idx="${i}">${escHtml(r.display_name)}</div>`
+            ).join('');
+            searchResults.style.display = 'block';
+            searchResults.querySelectorAll('.search-result-item').forEach((el, i) => {
+                el.addEventListener('click', () => {
+                    const r = data[i];
+                    map.setView([parseFloat(r.lat), parseFloat(r.lon)], 16);
+                    searchResults.style.display = 'none';
+                    searchInput.value = r.display_name;
+                });
+            });
+        } catch {
+            searchResults.style.display = 'none';
+        }
+    }
+
+    document.addEventListener('click', (e) => {
+        if (!document.getElementById('search-container').contains(e.target))
+            searchResults.style.display = 'none';
+    });
+
+    // ── Upload point cloud ───────────────────────────────
+    document.getElementById('map-pc-upload-btn').addEventListener('click', async () => {
+        const input = document.getElementById('map-pc-file-input');
+        if (!input?.files?.[0]) {
+            setUploadStatus('Select a point cloud file first.', 'error');
+            return;
+        }
+        const fd = new FormData();
+        fd.append('file', input.files[0]);
+        setUploadStatus('Uploading point cloud…', 'info');
+
+        try {
+            const res = await api('/api/upload-point-cloud', { method: 'POST', body: fd });
+            const data = await res.json();
+            if (!data.success) {
+                setUploadStatus(data.error || 'Upload failed.', 'error');
+                return;
+            }
+            pointCloudPath = data.data.filepath;
+            setUploadStatus(`Uploaded ${data.data.filename}. Now draw area on map.`, 'ok');
+            document.getElementById('map-generate-mesh-btn').disabled = true;
+        } catch {
+            setUploadStatus('Upload failed. Check server and retry.', 'error');
+        }
+    });
+
+    // ── Check selected area ──────────────────────────────
+    document.getElementById('map-check-area-btn').addEventListener('click', async () => {
+        if (!pointCloudPath) {
+            setCheckStatus('Upload corresponding point cloud first.', 'error');
+            return;
+        }
+        if (!polygon || polygon.length < 3) {
+            setCheckStatus('Draw a polygon or rectangle on the map first.', 'error');
+            return;
+        }
+
+        setCheckStatus('Checking whether selected area captures point-cloud points…', 'info');
+
+        try {
+            const res = await api('/api/extract-region', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ point_cloud_path: pointCloudPath, polygon }),
+            });
+            const result = await res.json();
+            const count = result?.data?.point_count || 0;
+            const btn = document.getElementById('map-generate-mesh-btn');
+
+            if (!result.success) {
+                btn.disabled = true;
+                const reason = result?.data?.reason || result.error || 'No points in selected area.';
+                const hint = result?.data?.hint || 'Check map position and coordinate reference.';
+                setCheckStatus(`${reason} ${hint}`, 'error');
+                return;
+            }
+            if (count < 200) {
+                btn.disabled = true;
+                const warning = result?.data?.warning || 'Very few points for stable meshing.';
+                const hint = result?.data?.hint || 'Select a larger area or verify cloud location.';
+                setCheckStatus(`Found ${count} points. ${warning} ${hint}`, 'warn');
+                return;
+            }
+            btn.disabled = false;
+            const transformed = result?.data?.coordinate_transformed ? ' (coordinates transformed to match cloud CRS)' : '';
+            setCheckStatus(`Found ${count} points${transformed}. Ready to generate mesh.`, 'ok');
+        } catch {
+            setCheckStatus('Area check failed. Please retry.', 'error');
+        }
+    });
+
+    // ── Generate mesh ────────────────────────────────────
+    document.getElementById('map-generate-mesh-btn').addEventListener('click', async () => {
+        if (!pointCloudPath || !polygon) {
+            setCheckStatus('Upload point cloud and select area first.', 'error');
+            return;
+        }
+        const algo = document.getElementById('map-mesh-algo')?.value || 'poisson';
+        const description = document.getElementById('map-mesh-desc')?.value?.trim() || '';
+        setCheckStatus('Generating mesh from selected area…', 'info');
+
+        try {
+            const res = await api('/api/generate-mesh', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    point_cloud_path: pointCloudPath,
+                    polygon,
+                    algorithm: algo,
+                    description: description || undefined,
+                    generator_params: { depth: 8 },
+                }),
+            });
+            const result = await res.json();
+            if (!result.success) {
+                setCheckStatus(result.error || 'Mesh generation failed.', 'error');
+                return;
+            }
+            const d = result.data || {};
+            const info = d.mesh_id ? ` (ID: ${d.mesh_id})` : '';
+            setCheckStatus(`Mesh created and saved to server${info}. Open the viewer to load it.`, 'ok');
+        } catch {
+            setCheckStatus('Mesh generation request failed.', 'error');
+        }
+    });
+
+    // ── Helpers ──────────────────────────────────────────
+    function setUploadStatus(msg, level) {
+        const el = document.getElementById('map-upload-status');
+        el.textContent = msg;
+        el.style.color = statusColor(level);
+    }
+    function setCheckStatus(msg, level) {
+        const el = document.getElementById('map-check-status');
+        el.textContent = msg;
+        el.style.color = statusColor(level);
+    }
+    function statusColor(level) {
+        if (level === 'ok') return '#4ec9b0';
+        if (level === 'warn') return '#f5c542';
+        if (level === 'error') return '#f26d6d';
+        return '#aaa';
+    }
+    function escHtml(str) {
+        const d = document.createElement('div');
+        d.textContent = str;
+        return d.innerHTML;
+    }
+})();
+</script>
+</body>
+</html>

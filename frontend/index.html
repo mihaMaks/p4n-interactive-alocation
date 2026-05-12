@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P4NA Location — Area Mesh Viewer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ─────────────────── Login Screen ─────────────────── -->
+<div id="login-screen">
+    <div class="login-card">
+        <h1>P4NA Location</h1>
+        <p>Enter your location access code</p>
+        <input type="text" id="access-code-input" placeholder="Access code" autocomplete="off">
+        <button id="login-btn">Enter</button>
+        <div id="login-error" class="error" style="display:none"></div>
+        <hr style="border:none;border-top:1px solid #333;margin:20px 0 14px">
+        <p style="color:#666;font-size:13px;margin-bottom:10px">Or view area meshes (read-only):</p>
+        <div id="preview-mesh-list" style="max-height:180px;overflow-y:auto"><p class="hint">Loading…</p></div>
+    </div>
+</div>
+
+<!-- ─────────────────── Main App ─────────────────────── -->
+<div id="app">
+
+    <!-- Top bar -->
+    <div id="topbar">
+        <div class="topbar-left">
+            <h2>P4NA Location</h2>
+            <span id="role-badge" class="badge"></span>
+            <span id="location-label"></span>
+            <span id="animal-name-badge" class="badge" style="background:#eee;color:#333;margin-left:10px"></span>
+        </div>
+        <button id="logout-btn">Sign Out</button>
+    </div>
+
+    <div id="main-layout">
+
+        <!-- ── Sidebar ───────────────────────────────── -->
+        <div id="sidebar">
+
+            <!-- Maintainer: Upload & Codes -->
+            <div id="maintainer-section" class="panel" style="display:none">
+                <h3>Mesh Management</h3>
+                <div class="form-group">
+                    <label>Upload Mesh (.obj)</label>
+                    <input type="file" id="mesh-file-input" accept=".obj,.glb,.gltf,.stl,.ply">
+                </div>
+                <div class="form-group">
+                    <label>Location ID</label>
+                    <input type="text" id="upload-location-id" placeholder="e.g. PARK-438-124">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" id="upload-description" placeholder="Area description">
+                </div>
+                <div class="form-group inline">
+                    <div><label>Center X</label><input type="number" id="upload-cx" value="0" step="0.01"></div>
+                    <div><label>Center Y</label><input type="number" id="upload-cy" value="0" step="0.01"></div>
+                    <div><label>Center Z</label><input type="number" id="upload-cz" value="0" step="0.01"></div>
+                </div>
+                <button class="btn-primary" id="upload-mesh-btn">Upload Mesh</button>
+
+                <hr>
+                <h3>Access Codes</h3>
+                <div class="form-group">
+                    <label>Location ID for new code</label>
+                    <input type="text" id="new-code-location" placeholder="Location ID">
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <select id="new-code-role">
+                        <option value="user">User</option>
+                        <option value="maintainer">Maintainer</option>
+                    </select>
+                </div>
+                <button class="btn-secondary" id="create-code-btn">Generate Code</button>
+                <div id="generated-code" class="code-display" style="display:none"></div>
+            </div>
+
+            <!-- Mesh list -->
+            <div class="panel">
+                <h3>Area Meshes</h3>
+                <div class="form-group">
+                    <label>Search</label>
+                    <input type="text" id="mesh-search-input" placeholder="Search by name or location">
+                </div>
+                <div id="mesh-list-container">
+                    <p class="hint">Loading…</p>
+                </div>
+            </div>
+
+            <!-- Mesh info (shown when a mesh is selected) -->
+            <div id="mesh-info-panel" class="panel" style="display:none">
+                <h3>Mesh Info</h3>
+                <div id="mesh-info"></div>
+                <div id="maintainer-mesh-controls" style="display:none">
+                    <button class="btn-secondary" id="edit-metadata-btn">Save Corrections</button>
+                </div>
+            </div>
+
+            <!-- Vehicle placement -->
+            <div class="panel">
+                <h3>Place Vehicle</h3>
+                <div class="form-group">
+                    <label>Vehicle Name</label>
+                    <input type="text" id="vehicle-name-input" placeholder="e.g. Service Van A1">
+                </div>
+                <div class="form-group">
+                    <label>Vehicle Type</label>
+                    <select id="vehicle-select"><option value="">-- Select --</option></select>
+                </div>
+                <div class="dims-display" id="vehicle-dims">
+                    <span>L: <strong id="dim-l">-</strong> m</span>
+                    <span>W: <strong id="dim-w">-</strong> m</span>
+                    <span>H: <strong id="dim-h">-</strong> m</span>
+                </div>
+                <div id="custom-dims" style="display:none">
+                    <div class="form-group inline">
+                        <div><label>Length (m)</label><input type="number" id="custom-length" value="4" step="0.1" min="0.1"></div>
+                        <div><label>Width (m)</label><input type="number" id="custom-width" value="2" step="0.1" min="0.1"></div>
+                        <div><label>Height (m)</label><input type="number" id="custom-height" value="1.5" step="0.1" min="0.1"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Departure Date & Time</label>
+                    <input type="datetime-local" id="departure-date-input">
+                </div>
+                <button class="btn-primary" id="place-vehicle-btn" disabled>Place on Mesh</button>
+                <button class="btn-secondary" id="cancel-place-btn">Cancel Placement</button>
+                <button class="btn-secondary" id="export-btn">Export Scene (.gltf)</button>
+                <p class="hint" style="margin-top:8px">Scroll to rotate while placing. Click to confirm spot.</p>
+            </div>
+
+            <!-- Placed vehicles list -->
+            <div class="panel">
+                <h3>Placed Vehicles</h3>
+                <div id="placed-vehicles-list"><p class="hint">Select a mesh to see vehicles</p></div>
+            </div>
+
+            <!-- Mesh colour & satellite -->
+            <div id="mesh-appearance-panel" class="panel">
+                <h3>Mesh Appearance</h3>
+                <div class="form-group" style="display:flex;gap:8px;align-items:center">
+                    <input type="color" id="mesh-color-input" value="#ffffff" style="width:48px;height:32px;border:none;cursor:pointer">
+                    <button class="btn-secondary" id="save-mesh-color-btn" style="flex:1">Save Colour</button>
+                </div>
+                <div class="form-group" style="margin-top:8px">
+                    <button class="btn-secondary" id="satellite-toggle-btn" style="width:100%">🛰️ RGB Overlay</button>
+                    <p class="hint">Applies geo-referenced RGB vertex colours from point cloud data.</p>
+                </div>
+            </div>
+
+            <!-- Activity Log (maintainer) -->
+            <div id="log-section" class="panel" style="display:none">
+                <h3>Activity Log</h3>
+                <div class="form-group" style="display:flex;gap:8px;align-items:center">
+                    <select id="log-filter" style="flex:1">
+                        <option value="">All Actions</option>
+                        <option value="placement_commit">Placements</option>
+                        <option value="placement_update">Moves/Updates</option>
+                        <option value="placement_delete">Deletions</option>
+                        <option value="mesh_upload">Mesh Uploads</option>
+                    </select>
+                    <button class="btn-secondary" id="refresh-log-btn">Refresh</button>
+                </div>
+                <div id="log-entries" style="max-height:350px;overflow-y:auto;font-size:12px"></div>
+            </div>
+
+            <!-- Mesh processing (maintainer) -->
+            <div id="process-section" class="panel" style="display:none">
+                <h3>Mesh Processing</h3>
+                <label class="checkbox-label"><input type="checkbox" id="proc-fill" checked> Fill holes</label>
+                <label class="checkbox-label"><input type="checkbox" id="proc-smooth" checked> Smooth surfaces</label>
+                <div class="form-group">
+                    <label>Smooth iterations</label>
+                    <input type="number" id="proc-iterations" value="5" min="1" max="50" step="1">
+                </div>
+                <div class="form-group">
+                    <label>Smooth method</label>
+                    <select id="proc-method">
+                        <option value="laplacian">Laplacian</option>
+                        <option value="taubin">Taubin</option>
+                    </select>
+                </div>
+                <button class="btn-primary" id="process-mesh-btn">Process Mesh</button>
+
+                <hr>
+                <h3>Manual Hole Fill</h3>
+                <div class="form-group">
+                    <label>Hole Size</label>
+                    <input type="number" id="manual-hole-size" value="100" min="1" step="1">
+                </div>
+                <button class="btn-secondary" id="enable-hole-fill-btn">Enable Click Fill</button>
+                <p class="hint">Click a mesh area to run hole-fill and reload.</p>
+            </div>
+
+            <!-- Mesh paint (maintainer) -->
+            <div id="paint-section" class="panel" style="display:none">
+                <h3>Paint Mesh Parts</h3>
+                <div class="form-group" style="display:flex;gap:8px;align-items:center">
+                    <input type="color" id="paint-color-input" value="#ff7f50" style="width:48px;height:32px;border:none;cursor:pointer">
+                    <input type="number" id="paint-radius-input" value="2.5" min="0.1" step="0.1" style="flex:1">
+                </div>
+                <button class="btn-secondary" id="enable-paint-btn">Enable Paint Mode</button>
+                <button class="btn-secondary" id="clear-paint-btn">Clear Paint</button>
+                <button class="btn-primary" id="save-paint-btn">Save Painted Mesh</button>
+                <p class="hint">Paint is saved and visible to users after save.</p>
+            </div>
+
+            <!-- Scale reference -->
+            <div class="panel">
+                <h3>Scale Reference</h3>
+                <p style="font-size:13px;color:#aaa">1 unit = 1 meter (EPSG:3794)</p>
+                <div id="scale-bar">
+                    <div class="scale-bar-inner"></div>
+                    <span>10 m</span>
+                </div>
+                <p id="placed-count">Vehicles placed: 0</p>
+            </div>
+
+            <!-- Discussion Forum -->
+            <div id="forum-panel" class="panel">
+                <h3>Messages</h3>
+                <div id="forum-messages" style="max-height:220px;overflow-y:auto;margin-bottom:8px"></div>
+                <div style="display:flex;gap:6px">
+                    <input id="forum-input" type="text" placeholder="Type a message…"
+                        style="flex:1" onkeydown="if(event.key==='Enter') document.getElementById('forum-send-btn').click()">
+                    <button id="forum-send-btn" class="btn-primary">Send</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── 3D Viewer ─────────────────────────────── -->
+        <div id="viewer-container">
+            <!-- Correction panel injected by JS for maintainer -->
+            <button id="open-map-btn" class="floating-map-btn" style="display:none" title="Create Mesh From Map Area">🗺️ Create Mesh</button>
+        </div>
+    </div>
+</div>
+
+<!-- ─── Three.js import map ──────────────────────────── -->
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+}
+</script>
+<script type="module" src="app.js"></script>
+</body>
+</html>

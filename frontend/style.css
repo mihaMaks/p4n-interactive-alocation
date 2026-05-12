@@ -1,0 +1,661 @@
+/* ── Base ─────────────────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #0f0f1a;
+    color: #e0e0e0;
+    overflow: hidden;
+    height: 100vh;
+}
+
+/* ── Login screen ────────────────────────────────────── */
+#login-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+}
+
+.login-card {
+    background: #1e1e30;
+    padding: 40px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    width: 360px;
+}
+
+.login-card h1 {
+    font-size: 28px;
+    color: #fff;
+    margin-bottom: 6px;
+}
+
+.login-card p {
+    color: #888;
+    margin-bottom: 24px;
+}
+
+.login-card input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #333;
+    border-radius: 6px;
+    background: #16162a;
+    color: #fff;
+    font-size: 15px;
+    margin-bottom: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.login-card input:focus {
+    border-color: #667eea;
+}
+
+.login-card button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    background: #667eea;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.login-card button:hover { background: #5568d3; }
+
+.error {
+    color: #e74c3c;
+    font-size: 13px;
+    margin-top: 10px;
+}
+
+/* ── App layout ──────────────────────────────────────── */
+#app {
+    display: none;          /* shown after login */
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* Top bar */
+#topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background: #1a1a2e;
+    border-bottom: 1px solid #2a2a3e;
+    flex-shrink: 0;
+}
+
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.topbar-left h2 { font-size: 16px; color: #fff; }
+
+.badge {
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-maintainer { background: #e74c3c; color: #fff; }
+.badge-user       { background: #3498db; color: #fff; }
+
+#location-label { color: #888; font-size: 13px; }
+
+#logout-btn {
+    padding: 6px 16px;
+    border: 1px solid #444;
+    border-radius: 4px;
+    background: transparent;
+    color: #ccc;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+#logout-btn:hover { background: #2a2a3e; }
+
+/* Main layout: sidebar + viewer */
+#main-layout {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* ── Sidebar ─────────────────────────────────────────── */
+#sidebar {
+    width: 320px;
+    flex-shrink: 0;
+    overflow-y: auto;
+    background: #16162a;
+    border-right: 1px solid #2a2a3e;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.panel {
+    background: #1e1e30;
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.panel h3 {
+    font-size: 14px;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+}
+
+.panel hr {
+    border: none;
+    border-top: 1px solid #2a2a3e;
+    margin: 14px 0;
+}
+
+/* ── Form elements ───────────────────────────────────── */
+.form-group {
+    margin-bottom: 12px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 4px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #333;
+    border-radius: 4px;
+    background: #12122a;
+    color: #ddd;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #667eea;
+}
+
+.form-group.inline {
+    display: flex;
+    gap: 8px;
+}
+
+.form-group.inline > div { flex: 1; }
+
+/* ── Buttons ─────────────────────────────────────────── */
+.btn-primary,
+.btn-secondary,
+.btn-danger {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 8px;
+    transition: opacity 0.2s;
+}
+
+.btn-primary   { background: #667eea; color: #fff; }
+.btn-secondary { background: #2a2a3e; color: #ccc; border: 1px solid #444; }
+.btn-danger    { background: #c0392b; color: #fff; }
+
+.btn-primary:hover   { opacity: 0.9; }
+.btn-secondary:hover { background: #333; }
+.btn-danger:hover    { opacity: 0.9; }
+
+.btn-secondary.active-mode {
+    background: #4a6cf7;
+    border-color: #4a6cf7;
+    color: #fff;
+}
+
+.btn-primary:disabled,
+.btn-secondary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* ── Mesh list ───────────────────────────────────────── */
+.mesh-item {
+    padding: 10px 12px;
+    border: 1px solid #2a2a3e;
+    border-radius: 6px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mesh-item:hover { background: #22223a; }
+
+.mesh-item.selected {
+    border-color: #667eea;
+    background: #1f1f3f;
+}
+
+.mesh-item.in-scene {
+    border-color: #4ec9b0;
+}
+
+.mesh-item-text { flex: 1; min-width: 0; }
+
+.mesh-item strong {
+    display: block;
+    font-size: 13px;
+    color: #ddd;
+}
+
+.mesh-item small {
+    font-size: 11px;
+    color: #666;
+}
+
+/* ── Eye toggle button (mesh & point cloud items) ──── */
+.btn-eye {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border: 1px solid #444;
+    border-radius: 4px;
+    background: #1a1a2e;
+    color: #888;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+    padding: 0;
+    line-height: 1;
+}
+.btn-eye:hover { background: #2a2a3e; border-color: #667eea; }
+.btn-eye.active { background: #1b3a2e; border-color: #4ec9b0; color: #4ec9b0; }
+
+/* ── Point cloud list items ────────────────────────── */
+.pc-item {
+    padding: 8px 10px;
+    border: 1px solid #2a2a3e;
+    border-radius: 6px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.15s, border-color 0.15s;
+}
+.pc-item:hover { background: #22223a; }
+.pc-item.selected { border-color: #667eea; background: #1f1f3f; }
+.pc-item.in-scene { border-color: #4ec9b0; }
+.pc-item-text { flex: 1; min-width: 0; }
+.pc-item strong { display: block; font-size: 12px; color: #ddd; overflow: hidden; text-overflow: ellipsis; }
+.pc-item small { font-size: 11px; color: #666; }
+
+.hint {
+    color: #555;
+    font-size: 13px;
+    font-style: italic;
+}
+
+/* ── Mesh info ───────────────────────────────────────── */
+#mesh-info p {
+    font-size: 12px;
+    margin-bottom: 4px;
+    color: #aaa;
+}
+
+#mesh-info strong { color: #ccc; }
+
+/* ── Vehicle dims ────────────────────────────────────── */
+.dims-display {
+    display: flex;
+    gap: 12px;
+    margin: 10px 0;
+    font-size: 13px;
+    color: #aaa;
+}
+
+.dims-display strong { color: #fff; }
+
+/* ── Code display ────────────────────────────────────── */
+.code-display {
+    background: #12122a;
+    border: 1px solid #667eea;
+    border-radius: 6px;
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 13px;
+    word-break: break-all;
+}
+
+.code-display code {
+    color: #667eea;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.code-display small { color: #666; }
+
+/* ── Scale bar ───────────────────────────────────────── */
+#scale-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0;
+}
+
+.scale-bar-inner {
+    height: 4px;
+    width: 80px;
+    background: #667eea;
+    border-radius: 2px;
+}
+
+#scale-bar span {
+    font-size: 12px;
+    color: #888;
+}
+
+#placed-count {
+    font-size: 13px;
+    color: #888;
+    margin-top: 6px;
+}
+
+/* ── 3D Viewer ───────────────────────────────────────── */
+#viewer-container {
+    flex: 1;
+    position: relative;
+    background: #111122;
+    overflow: hidden;
+}
+
+/* ── Correction panel (maintainer) ───────────────────── */
+#correction-panel {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(30, 30, 48, 0.95);
+    padding: 14px;
+    border-radius: 8px;
+    z-index: 10;
+    min-width: 220px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+
+#correction-panel h4 {
+    font-size: 12px;
+    color: #888;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.cor-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+    font-size: 12px;
+    color: #aaa;
+}
+
+.cor-row span:first-child {
+    width: 70px;
+    flex-shrink: 0;
+}
+
+.cor-row span:not(:first-child) {
+    width: 50px;
+    text-align: center;
+    font-family: monospace;
+    color: #ccc;
+}
+
+.cor-row button {
+    width: 28px;
+    height: 28px;
+    border: 1px solid #444;
+    border-radius: 4px;
+    background: #2a2a3e;
+    color: #ccc;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    line-height: 1;
+    transition: background 0.15s;
+}
+
+.cor-row button:hover {
+    background: #3a3a50;
+    border-color: #667eea;
+    color: #fff;
+}
+
+/* ── Toast messages ──────────────────────────────────── */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 12px 20px;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 14px;
+    z-index: 100;
+    animation: fadeIn 0.2s;
+}
+
+
+.toast-success { background: #27ae60; }
+.toast-error   { background: #e74c3c; }
+
+/* ── Discussion forum ─────────────────────────────────── */
+.forum-msg { padding: 6px 8px; border-radius: 6px; margin-bottom: 6px; background: #1e1e1e; }
+.forum-msg--own { background: #1a2a1a; border-left: 2px solid #4a8a4a; }
+.forum-msg-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 2px; }
+.forum-msg-header small { color: #888; font-size: 10px; }
+.forum-msg-body { font-size: 13px; color: #ddd; word-break: break-word; }
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Responsive ──────────────────────────────────────── */
+@media (max-width: 900px) {
+    #sidebar { width: 260px; }
+}
+
+/* ── Confirm dialog ──────────────────────────────────── */
+#confirm-dialog {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(30, 30, 48, 0.97);
+    padding: 24px 28px;
+    border-radius: 10px;
+    z-index: 20;
+    min-width: 260px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+    text-align: center;
+}
+
+#confirm-dialog h4 {
+    font-size: 14px;
+    text-transform: uppercase;
+    color: #aaa;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+}
+
+#confirm-dialog p {
+    font-size: 13px;
+    color: #ccc;
+    margin-bottom: 6px;
+}
+
+#confirm-dialog strong {
+    color: #fff;
+}
+
+.confirm-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.confirm-actions button { flex: 1; }
+
+/* ── Checkbox labels ─────────────────────────────────── */
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #aaa;
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+    accent-color: #667eea;
+    width: 16px;
+    height: 16px;
+}
+
+.vehicle-label {
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    background: rgba(20, 20, 35, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    padding: 2px 6px;
+    white-space: nowrap;
+    pointer-events: none;
+    transform: translate(-50%, -100%);
+}
+
+/* ── Placed vehicles list ────────────────────────── */
+.placed-vehicle-item {
+    background: #1a1a2e;
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 8px;
+    margin-bottom: 6px;
+}
+.placed-vehicle-item:hover { border-color: #667eea; }
+
+.btn-sm {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+.btn-sm.btn-secondary {
+    background: #2a2a3e;
+    color: #bbb;
+    border-color: #444;
+}
+.btn-sm.btn-secondary:hover { background: #3a3a50; color: #fff; }
+.btn-sm.btn-danger {
+    background: #3a1a1a;
+    color: #ff6b6b;
+    border-color: #552222;
+}
+.btn-sm.btn-danger:hover { background: #552222; }
+
+/* ── Activity Log ────────────────────────────────── */
+.log-entry {
+    padding: 6px 0;
+    border-bottom: 1px solid #222;
+    line-height: 1.4;
+}
+.log-time { color: #888; margin-right: 6px; }
+.log-action {
+    display: inline-block;
+    background: #2a2a3e;
+    color: #667eea;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 11px;
+    margin-right: 4px;
+}
+.log-user { color: #aaa; }
+.log-details {
+    color: #777;
+    font-size: 11px;
+    margin-top: 2px;
+    word-break: break-all;
+}
+
+/* ── Floating map button (maintainer) ──────────────── */
+.floating-map-btn {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    background: #667eea;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    z-index: 15;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    transition: background 0.2s;
+}
+.floating-map-btn:hover { background: #5568d3; }
+
+/* ── Preview mesh buttons (login screen) ──────────── */
+.preview-mesh-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 8px 10px;
+    margin-bottom: 4px;
+    border: 1px solid #333;
+    border-radius: 6px;
+    background: #16162a;
+    color: #ddd;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+}
+.preview-mesh-btn:hover {
+    background: #22223a;
+    border-color: #667eea;
+}
