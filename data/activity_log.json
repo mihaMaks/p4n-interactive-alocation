@@ -1,0 +1,448 @@
+[
+  {
+    "timestamp": "2026-04-06T14:37:39.750946+00:00",
+    "action": "placement_commit",
+    "user": "User access code",
+    "details": {
+      "placement_id": "0c9f270f-fbae-4cb7-a56f-525e31afcd33",
+      "mesh_id": "4f67764d-9803-4094-96e7-92d239ea9b64",
+      "vehicle_id": "suv"
+    }
+  },
+  {
+    "timestamp": "2026-04-06T14:37:57.035376+00:00",
+    "action": "placement_update",
+    "user": "User access code",
+    "details": {
+      "placement_id": "0c9f270f-fbae-4cb7-a56f-525e31afcd33",
+      "updates": [
+        "x",
+        "y",
+        "z",
+        "rotation_y"
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-04-06T14:39:39.682847+00:00",
+    "action": "placement_update",
+    "user": "User access code",
+    "details": {
+      "placement_id": "0c9f270f-fbae-4cb7-a56f-525e31afcd33",
+      "updates": [
+        "departure_date"
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-04-06T14:39:46.621083+00:00",
+    "action": "placement_update",
+    "user": "User access code",
+    "details": {
+      "placement_id": "0c9f270f-fbae-4cb7-a56f-525e31afcd33",
+      "updates": [
+        "departure_date"
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-04-06T15:16:23.772883+00:00",
+    "action": "pointcloud_upload",
+    "user": "Maintainer access code",
+    "details": {
+      "filename": "extracted_GKOT_438_124.laz"
+    }
+  },
+  {
+    "timestamp": "2026-04-06T15:17:24.457987+00:00",
+    "action": "pointcloud_upload",
+    "user": "Maintainer access code",
+    "details": {
+      "filename": "GKOT_438_124.laz"
+    }
+  },
+  {
+    "timestamp": "2026-04-09T11:49:43.689867+00:00",
+    "action": "mesh_upload",
+    "user": "Maintainer access code",
+    "details": {
+      "mesh_id": "98c82bb4-eb16-49a2-b03b-3e8c17d58a8d",
+      "filename": "extracted_DMP_438_124_bpa.obj"
+    }
+  },
+  {
+    "timestamp": "2026-04-09T11:53:34.365262+00:00",
+    "action": "placement_delete",
+    "user": "Maintainer access code",
+    "details": {
+      "placement_id": "0c9f270f-fbae-4cb7-a56f-525e31afcd33"
+    }
+  },
+  {
+    "timestamp": "2026-04-09T11:59:59.726611+00:00",
+    "action": "mesh_upload",
+    "user": "Maintainer access code",
+    "details": {
+      "mesh_id": "f8eacc2d-e03e-4bed-b81d-0ccf3262ea47",
+      "filename": "world_map_koloret.obj"
+    }
+  },
+  {
+    "timestamp": "2026-04-09T12:10:44.936490+00:00",
+    "action": "placement_delete",
+    "user": "Maintainer access code",
+    "details": {
+      "placement_id": "6544621b-e8c3-4284-8afc-ffc947124958"
+    }
+  },
+  {
+    "timestamp": "2026-04-09T12:29:43.304462+00:00",
+    "action": "placement_delete",
+    "user": "User access code",
+    "details": {
+      "placement_id": "344ef241-59e6-486e-a874-e1205dc4baa1"
+    }
+  },
+  {
+    "timestamp": "2026-04-09T12:36:46.064619+00:00",
+    "action": "placement_commit",
+    "user": "Maintainer access code",
+    "details": {
+      "placement_id": "b781ad8e-29b6-4b51-99d8-4d3b5adec8c7",
+      "mesh_id": "fdb691ab-7127-461a-92f5-817679b740ab",
+      "vehicle_id": "van"
+    }
+  },
+  {
+    "timestamp": "2026-04-09T12:37:19.857048+00:00",
+    "action": "placement_commit",
+    "user": "Maintainer access code",
+    "details": {
+      "placement_id": "4575364c-6535-454d-ac95-62dcd0005564",
+      "mesh_id": "fdb691ab-7127-461a-92f5-817679b740ab",
+      "vehicle_id": "small_car"
+    }
+  },
+  {
+    "timestamp": "2026-04-09T12:37:27.626663+00:00",
+    "action": "placement_delete",
+    "user": "Maintainer access code",
+    "details": {
+      "placement_id": "6f03ad79-13dd-4081-a0fc-0b1ffa811728"
+    }
+  },
+  {
+    "timestamp": "2026-04-09T12:42:59.678656+00:00",
+    "action": "mesh_upload",
+    "user": "Maintainer access code",
+    "details": {
+      "mesh_id": "9c2a86f5-b54c-4c10-a8bd-ab59b24b2d68",
+      "filename": "extracted_jelovce.obj"
+    }
+  },
+  {
+    "timestamp": "2026-04-09T13:12:09.380656+00:00",
+    "action": "placement_commit",
+    "user": "User access code",
+    "details": {
+      "placement_id": "0e61b66f-6c88-4170-99e5-20b5c5c58694",
+      "mesh_id": "fdb691ab-7127-461a-92f5-817679b740ab",
+      "vehicle_id": "bus"
+    }
+  },
+  {
+    "timestamp": "2026-04-09T13:12:39.555766+00:00",
+    "action": "placement_delete",
+    "user": "User access code",
+    "details": {
+      "placement_id": "0e61b66f-6c88-4170-99e5-20b5c5c58694"
+    }
+  },
+  {
+    "timestamp": "2026-04-09T13:13:16.209357+00:00",
+    "action": "placement_commit",
+    "user": "User access code",
+    "details": {
+      "placement_id": "dbfd17f6-0e1c-4d2c-a5bd-9be255991abd",
+      "mesh_id": "fdb691ab-7127-461a-92f5-817679b740ab",
+      "vehicle_id": "suv"
+    }
+  },
+  {
+    "timestamp": "2026-04-09T13:16:03.335211+00:00",
+    "action": "mesh_upload",
+    "user": "Maintainer access code",
+    "details": {
+      "mesh_id": "aa9d6bbc-a593-4425-a07e-dc74846963f6",
+      "filename": "GKOT_438_124_ball_pivoting_817af6ed.obj"
+    }
+  },
+  {
+    "timestamp": "2026-04-09T13:16:32.043370+00:00",
+    "action": "placement_commit",
+    "user": "Maintainer access code",
+    "details": {
+      "placement_id": "1f25dd6f-826e-4d8e-8b34-02b092409644",
+      "mesh_id": "aa9d6bbc-a593-4425-a07e-dc74846963f6",
+      "vehicle_id": "small_car"
+    }
+  },
+  {
+    "timestamp": "2026-04-09T13:16:54.037764+00:00",
+    "action": "placement_update",
+    "user": "Maintainer access code",
+    "details": {
+      "placement_id": "1f25dd6f-826e-4d8e-8b34-02b092409644",
+      "updates": [
+        "x",
+        "y",
+        "z",
+        "rotation_y"
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-04-09T13:17:12.874029+00:00",
+    "action": "placement_delete",
+    "user": "Maintainer access code",
+    "details": {
+      "placement_id": "1f25dd6f-826e-4d8e-8b34-02b092409644"
+    }
+  },
+  {
+    "timestamp": "2026-04-09T15:59:37.325618+00:00",
+    "action": "placement_commit",
+    "user": "User access code",
+    "details": {
+      "placement_id": "8d485c80-f1bf-40ee-9786-396892562248",
+      "mesh_id": "4db78ec7-3381-4f26-9361-6d50ed799406",
+      "vehicle_id": "sedan"
+    }
+  },
+  {
+    "timestamp": "2026-04-09T15:59:47.058349+00:00",
+    "action": "placement_delete",
+    "user": "User access code",
+    "details": {
+      "placement_id": "8d485c80-f1bf-40ee-9786-396892562248"
+    }
+  },
+  {
+    "timestamp": "2026-04-09T16:03:07.760413+00:00",
+    "action": "placement_commit",
+    "user": "Maintainer access code",
+    "details": {
+      "placement_id": "ecbeb8aa-d1f6-431f-a6af-f557ef147f44",
+      "mesh_id": "aabd3d0a-d3d7-477b-b40d-ec72d5e533f5",
+      "vehicle_id": "sedan"
+    }
+  },
+  {
+    "timestamp": "2026-04-09T16:37:54.135401+00:00",
+    "action": "placement_update",
+    "user": "Maintainer access code",
+    "details": {
+      "placement_id": "b781ad8e-29b6-4b51-99d8-4d3b5adec8c7",
+      "updates": [
+        "x",
+        "z"
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-04-09T16:37:54.449452+00:00",
+    "action": "placement_update",
+    "user": "Maintainer access code",
+    "details": {
+      "placement_id": "b781ad8e-29b6-4b51-99d8-4d3b5adec8c7",
+      "updates": [
+        "x",
+        "z"
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-04-09T16:37:55.365741+00:00",
+    "action": "placement_update",
+    "user": "Maintainer access code",
+    "details": {
+      "placement_id": "b781ad8e-29b6-4b51-99d8-4d3b5adec8c7",
+      "updates": [
+        "x",
+        "z"
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-04-09T16:37:55.530730+00:00",
+    "action": "placement_update",
+    "user": "Maintainer access code",
+    "details": {
+      "placement_id": "b781ad8e-29b6-4b51-99d8-4d3b5adec8c7",
+      "updates": [
+        "x",
+        "z"
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-04-09T16:37:55.732352+00:00",
+    "action": "placement_update",
+    "user": "Maintainer access code",
+    "details": {
+      "placement_id": "b781ad8e-29b6-4b51-99d8-4d3b5adec8c7",
+      "updates": [
+        "x",
+        "z"
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-04-09T16:37:56.147456+00:00",
+    "action": "placement_update",
+    "user": "Maintainer access code",
+    "details": {
+      "placement_id": "b781ad8e-29b6-4b51-99d8-4d3b5adec8c7",
+      "updates": [
+        "x",
+        "z"
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-04-09T16:37:56.898956+00:00",
+    "action": "placement_update",
+    "user": "Maintainer access code",
+    "details": {
+      "placement_id": "b781ad8e-29b6-4b51-99d8-4d3b5adec8c7",
+      "updates": [
+        "x",
+        "z"
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-04-09T16:37:57.231857+00:00",
+    "action": "placement_update",
+    "user": "Maintainer access code",
+    "details": {
+      "placement_id": "b781ad8e-29b6-4b51-99d8-4d3b5adec8c7",
+      "updates": [
+        "x",
+        "z"
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-04-09T16:37:57.414517+00:00",
+    "action": "placement_update",
+    "user": "Maintainer access code",
+    "details": {
+      "placement_id": "b781ad8e-29b6-4b51-99d8-4d3b5adec8c7",
+      "updates": [
+        "x",
+        "z"
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-04-09T16:37:58.134456+00:00",
+    "action": "placement_update",
+    "user": "Maintainer access code",
+    "details": {
+      "placement_id": "b781ad8e-29b6-4b51-99d8-4d3b5adec8c7",
+      "updates": [
+        "x",
+        "z"
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-04-09T16:37:58.327959+00:00",
+    "action": "placement_update",
+    "user": "Maintainer access code",
+    "details": {
+      "placement_id": "b781ad8e-29b6-4b51-99d8-4d3b5adec8c7",
+      "updates": [
+        "x",
+        "z"
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-04-09T16:37:58.464225+00:00",
+    "action": "placement_update",
+    "user": "Maintainer access code",
+    "details": {
+      "placement_id": "b781ad8e-29b6-4b51-99d8-4d3b5adec8c7",
+      "updates": [
+        "x",
+        "z"
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-05-08T14:25:15.418201+00:00",
+    "action": "placement_commit",
+    "user": "User access code",
+    "details": {
+      "placement_id": "6f2f49b9-7a5e-4ea5-8162-9c86769e9129",
+      "mesh_id": "fdb691ab-7127-461a-92f5-817679b740ab",
+      "vehicle_id": "van"
+    }
+  },
+  {
+    "timestamp": "2026-05-12T10:54:06.927339+00:00",
+    "action": "placement_commit",
+    "user": "User access code",
+    "details": {
+      "placement_id": "af4236b2-d528-49eb-8858-cbec8b130533",
+      "mesh_id": "fdb691ab-7127-461a-92f5-817679b740ab",
+      "vehicle_id": "small_car"
+    }
+  },
+  {
+    "timestamp": "2026-05-12T11:19:56.630285+00:00",
+    "action": "mesh_upload",
+    "user": "Maintainer access code",
+    "details": {
+      "mesh_id": "c73e8f3f-3c67-47c0-81de-e66a172c4270",
+      "filename": "GKOT_438_124_poisson_e5108085.obj"
+    }
+  },
+  {
+    "timestamp": "2026-05-12T11:30:11.362609+00:00",
+    "action": "placement_delete",
+    "user": "User access code",
+    "details": {
+      "placement_id": "dbfd17f6-0e1c-4d2c-a5bd-9be255991abd"
+    }
+  },
+  {
+    "timestamp": "2026-05-12T11:35:05.787278+00:00",
+    "action": "placement_commit",
+    "user": "User access code",
+    "details": {
+      "placement_id": "09655965-3ebf-456c-b8f5-175e375d8d21",
+      "mesh_id": "fdb691ab-7127-461a-92f5-817679b740ab",
+      "vehicle_id": "small_car"
+    }
+  },
+  {
+    "timestamp": "2026-05-16T16:27:30.483094+00:00",
+    "action": "placement_delete",
+    "user": "Maintainer access code",
+    "details": {
+      "placement_id": "ecbeb8aa-d1f6-431f-a6af-f557ef147f44"
+    }
+  },
+  {
+    "timestamp": "2026-05-16T16:32:32.551391+00:00",
+    "action": "mesh_upload",
+    "user": "Maintainer access code",
+    "details": {
+      "mesh_id": "331f9620-b06c-4bf8-9706-f9af3b946db8",
+      "filename": "extracted_DMP_438_124_poisson.obj"
+    }
+  }
+]

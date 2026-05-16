@@ -62,7 +62,6 @@ coverage.xml
 .env.*.local
 
 # Data
-data/
 uploads/
 outputs/
 *.las

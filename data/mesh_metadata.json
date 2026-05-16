@@ -1,0 +1,124 @@
+{
+  "meshes": {
+    "da75687d-56e0-4b14-a008-fe6186e14e5a": {
+      "id": "da75687d-56e0-4b14-a008-fe6186e14e5a",
+      "filename": "DMP_438_124_poisson_297eea6d.obj",
+      "location_id": "default",
+      "description": "poiss_big_dmp",
+      "crs": "EPSG:3794",
+      "center_x": 0.0,
+      "center_y": 0.0,
+      "center_z": 0.0,
+      "bounds_min": [
+        0,
+        0,
+        0
+      ],
+      "bounds_max": [
+        0,
+        0,
+        0
+      ],
+      "unit": "meters",
+      "algorithm": "poisson",
+      "rotation_y": 0.0,
+      "offset_x": 0.0,
+      "offset_y": 0.0,
+      "offset_z": 0.0,
+      "color": "#ffffff",
+      "paint_strokes": [],
+      "owner": null,
+      "public": false
+    },
+    "d138367e-e365-4c12-b16c-f136e61757e5": {
+      "id": "d138367e-e365-4c12-b16c-f136e61757e5",
+      "filename": "DMP_438_124_ball_pivoting_492c0f92.obj",
+      "location_id": "default",
+      "description": "big_ball_dmp",
+      "crs": "EPSG:3794",
+      "center_x": 0.0,
+      "center_y": 0.0,
+      "center_z": 0.0,
+      "bounds_min": [
+        0,
+        0,
+        0
+      ],
+      "bounds_max": [
+        0,
+        0,
+        0
+      ],
+      "unit": "meters",
+      "algorithm": "ball_pivoting",
+      "rotation_y": 0.0,
+      "offset_x": 0.0,
+      "offset_y": 0.0,
+      "offset_z": 0.0,
+      "color": null,
+      "paint_strokes": [],
+      "owner": null,
+      "public": false
+    },
+    "d1006fed-258c-43a4-9f46-91b0c10263fa": {
+      "id": "d1006fed-258c-43a4-9f46-91b0c10263fa",
+      "filename": "GKOT_438_124_ball_pivoting_b0550148.obj",
+      "location_id": "default",
+      "description": "big_ball_gkot",
+      "crs": "EPSG:3794",
+      "center_x": 0.0,
+      "center_y": 0.0,
+      "center_z": 0.0,
+      "bounds_min": [
+        0,
+        0,
+        0
+      ],
+      "bounds_max": [
+        0,
+        0,
+        0
+      ],
+      "unit": "meters",
+      "algorithm": "ball_pivoting",
+      "rotation_y": 0.0,
+      "offset_x": 0.0,
+      "offset_y": 0.0,
+      "offset_z": 0.0,
+      "color": null,
+      "paint_strokes": [],
+      "owner": null,
+      "public": false
+    },
+    "331f9620-b06c-4bf8-9706-f9af3b946db8": {
+      "id": "331f9620-b06c-4bf8-9706-f9af3b946db8",
+      "filename": "extracted_DMP_438_124_poisson.obj",
+      "location_id": "default",
+      "description": "",
+      "crs": "EPSG:3794",
+      "center_x": 0.0,
+      "center_y": 0.0,
+      "center_z": 0.0,
+      "bounds_min": [
+        0,
+        0,
+        0
+      ],
+      "bounds_max": [
+        0,
+        0,
+        0
+      ],
+      "unit": "meters",
+      "algorithm": "poisson",
+      "rotation_y": 0.0,
+      "offset_x": 0.0,
+      "offset_y": 0.0,
+      "offset_z": 0.0,
+      "color": null,
+      "paint_strokes": [],
+      "owner": "Maintainer access code",
+      "public": true
+    }
+  }
+}

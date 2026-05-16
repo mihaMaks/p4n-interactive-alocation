@@ -1,0 +1,29 @@
+{
+  "codes": {
+    "secretAdmin": {
+      "role": "maintainer",
+      "location_id": "*",
+      "description": "Maintainer access code",
+      "animal_name": "Wise Owl"
+    },
+    "user": {
+      "role": "user",
+      "location_id": "*",
+      "description": "User access code",
+      "animal_name": "Lively Rabbit",
+      "devices": {
+        "ebf1c22e-1020-4869-bcc9-8a2328f012fe": {
+          "animal_name": "Clever Fox"
+        },
+        "fd81a04a-6040-451b-b547-2fc614476fa9": {
+          "animal_name": "Lively Rabbit"
+        }
+      }
+    },
+    "Sunph0TBX0nXqb733fqZUw": {
+      "role": "user",
+      "location_id": "8888",
+      "description": ""
+    }
+  }
+}
