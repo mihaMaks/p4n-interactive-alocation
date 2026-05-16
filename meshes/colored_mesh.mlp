@@ -1,0 +1,12 @@
+<!DOCTYPE MeshLabDocument>
+<MeshLabProject>
+ <MeshGroup>
+  <MLMesh filename="extracted_DMP_438_124_poisson.obj" visible="1" label="extracted_DMP_438_124_poisson.obj" idInFile="-1">
+   <MLMatrix44>
+1 0 0 -2.67765 0 1 0 -4.62316 0 0 1 -6.55939 0 0 0 1 
+</MLMatrix44>
+   <RenderingOption pointColor="252 233 79 255" boxColor="234 234 234 255" wireColor="64 64 64 255" solidColor="192 192 192 255" wireWidth="1" pointSize="3">100001010000000000000100000001011010001010100000000100111010100000001001</RenderingOption>
+  </MLMesh>
+ </MeshGroup>
+ <RasterGroup/>
+</MeshLabProject>

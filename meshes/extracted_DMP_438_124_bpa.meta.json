@@ -1,0 +1,21 @@
+{
+  "source_file": "extracted_DMP_438_124.laz",
+  "crs": "EPSG:3794",
+  "unit": "meters",
+  "center_x": 438743.5465900089,
+  "center_y": 124887.14799762094,
+  "center_z": 760.309773592387,
+  "bounds_min": [
+    438716.75000000093,
+    124864.75,
+    753.428
+  ],
+  "bounds_max": [
+    438770.75000000093,
+    124904.25,
+    767.862
+  ],
+  "num_points": 5044,
+  "algorithm": "ball_pivoting",
+  "filename": "extracted_DMP_438_124_bpa.obj"
+}

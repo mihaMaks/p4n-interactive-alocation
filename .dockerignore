@@ -1,0 +1,14 @@
+venv/
+.git/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info
+uploads/
+meshes/
+data/
+*.las
+*.laz
+*.obj
+node_modules/
+.env

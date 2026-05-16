@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>3D Mesh Builder - Ultra White & Double Sided</title>
+    <style>
+        body { margin: 0; overflow: hidden; font-family: sans-serif; background: #1a1a1a; }
+        #ui { 
+            position: absolute; top: 10px; left: 10px; z-index: 10; 
+            background: rgba(255,255,255,0.95); padding: 20px; 
+            border-radius: 8px; width: 280px; box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        }
+        label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 13px; }
+        input, select, button { width: 100%; margin-bottom: 10px; cursor: pointer; }
+        button { padding: 10px; border: none; border-radius: 4px; font-weight: bold; }
+        #place-btn { background: #3498db; color: white; }
+        #place-btn.placed { background: #e67e22; }
+    </style>
+</head>
+<body>
+
+<div id="ui">
+    <h3>LiDAR Scene Builder</h3>
+    <label>View Mode</label>
+    <select id="viewMode">
+        <option value="orbit">Orbit (Bird's Eye)</option>
+        <option value="fps">First Person (Walk)</option>
+    </select>
+    <hr>
+    <label>1. Area Mesh (LiDAR)</label>
+    <input type="file" id="areaInput" accept=".obj">
+    <label>2. Vehicle Mesh</label>
+    <input type="file" id="vehicleInput" accept=".obj">
+    <label>Vehicle Scale</label>
+    <input type="range" id="scaleSlider" min="0.01" max="10" step="0.01" value="1">
+    <button id="place-btn">Place Vehicle</button>
+    <button id="export-btn">Download Scene (.gltf)</button>
+</div>
+
+<script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+    }
+</script>
+
+<script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+    import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
+
+    // --- SETUP ---
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x111111);
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 200000);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    const orbitControls = new OrbitControls(camera, renderer.domElement);
+    
+    // LIGHTING: Hemisphere light provides "Sky" and "Ground" light to prevent black spots
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 1.5);
+    scene.add(hemiLight);
+
+    const sun = new THREE.DirectionalLight(0xffffff, 1);
+    sun.position.set(1000, 2000, 1000);
+    scene.add(sun);
+
+    // --- STATE ---
+    let areaMesh = null, vehicleMesh = null;
+    let isPlaced = false, isDragging = false, vOffset = 0;
+    let currentMode = 'orbit';
+    const loader = new OBJLoader();
+    const raycaster = new THREE.Raycaster();
+
+    // --- LOADING AREA ---
+    document.getElementById('areaInput').addEventListener('change', (e) => {
+        loader.load(URL.createObjectURL(e.target.files[0]), (obj) => {
+            if(areaMesh) scene.remove(areaMesh);
+            areaMesh = obj;
+
+            // 1. Correct the Up Vector
+            // Since your LiDAR export is likely Z-Up but Web is Y-Up:
+            areaMesh.rotation.x = -Math.PI / 2; 
+
+            areaMesh.traverse(child => {
+                if (child.isMesh) {
+                    // 2. ULTRA WHITE + DOUBLE SIDED (Fixes the black look)
+                    child.material = new THREE.MeshStandardMaterial({
+                        color: 0xffffff, 
+                        side: THREE.DoubleSide, // This is the magic fix
+                        flatShading: false,     // Keeps it smooth
+                        roughness: 0.5
+                    });
+                }
+            });
+
+            scene.add(areaMesh);
+            const box = new THREE.Box3().setFromObject(areaMesh);
+            const center = box.getCenter(new THREE.Vector3());
+            orbitControls.target.copy(center);
+            camera.position.set(center.x, center.y + 500, center.z + 500);
+        });
+    });
+
+    // --- LOADING VEHICLE ---
+    document.getElementById('vehicleInput').addEventListener('change', (e) => {
+        loader.load(URL.createObjectURL(e.target.files[0]), (group) => {
+            if(vehicleMesh) scene.remove(vehicleMesh);
+            vehicleMesh = group;
+            vehicleMesh.rotation.x = 0; // Reset rotation for new logic
+            applyScale(parseFloat(document.getElementById('scaleSlider').value));
+            vehicleMesh.traverse(c => { if(c.isMesh) c.material = new THREE.MeshStandardMaterial({color: 0xffcc00}) });
+            scene.add(vehicleMesh);
+        });
+    });
+
+    // --- MOUSE & MOVEMENT ---
+    window.addEventListener('mousedown', (e) => {
+        if (e.target.tagName !== 'CANVAS') return;
+        if (!isPlaced && vehicleMesh && currentMode === 'orbit') orbitControls.enabled = false;
+        isDragging = true;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+        if (!isDragging || isPlaced || !areaMesh || !vehicleMesh || currentMode === 'fps') return;
+        const m = new THREE.Vector2((e.clientX/window.innerWidth)*2-1, -(e.clientY/window.innerHeight)*2+1);
+        raycaster.setFromCamera(m, camera);
+        const hits = raycaster.intersectObject(areaMesh, true);
+        if (hits.length > 0) vehicleMesh.position.set(hits[0].point.x, hits[0].point.y + vOffset, hits[0].point.z);
+    });
+
+    window.addEventListener('mouseup', () => {
+        isDragging = false;
+        if (currentMode === 'orbit') orbitControls.enabled = true;
+    });
+
+    // --- HELPERS ---
+    function applyScale(val) {
+        if (!vehicleMesh) return;
+        vehicleMesh.scale.set(val, val, val);
+        vOffset = new THREE.Box3().setFromObject(vehicleMesh).getSize(new THREE.Vector3()).y / 2;
+    }
+    document.getElementById('scaleSlider').addEventListener('input', (e) => applyScale(parseFloat(e.target.value)));
+
+    document.getElementById('place-btn').addEventListener('click', () => {
+        if(!vehicleMesh) return; isPlaced = !isPlaced;
+        vehicleMesh.traverse(c => { if(c.isMesh) c.material.color.set(isPlaced ? 0x2ecc71 : 0xffcc00) });
+        document.getElementById('place-btn').textContent = isPlaced ? "Unplace Vehicle" : "Place Vehicle";
+    });
+
+    document.getElementById('viewMode').addEventListener('change', (e) => {
+        currentMode = e.target.value;
+        orbitControls.enabled = (currentMode === 'orbit');
+    });
+
+    // --- LOOP ---
+    function animate() {
+        requestAnimationFrame(animate);
+        orbitControls.update();
+        renderer.render(scene, camera);
+    }
+    animate();
+</script>
+</body>
+</html>

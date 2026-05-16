@@ -7,6 +7,8 @@ ENV PYTHONUNBUFFERED=1
 
 # Set work directory
 WORKDIR /app
+RUN mkdir -p /app/data /app/meshes /app/uploads
+
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -20,7 +22,9 @@ COPY requirements.txt ./
 
 # Install Python dependencies
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+    pip install --no-cache-dir -r requirements.txt && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /root/.cache
 
 # Copy project files
 COPY . .
@@ -30,4 +34,9 @@ COPY . .
 EXPOSE 5009
 
 # Default command (adjust as needed)
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5009", "backend.api.app:create_app()"]
+# CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5009", "backend.api.app:create_app()"]
+# CMD ["sh", "-c", "gunicorn -w 4 -b 0.0.0.0:5009 --timeout 120 'backend.api.app:create_app()'"]
+# CMD ["python", "run_backend.py"]
+CMD ["sh", "-c", "gunicorn -w 4 -b 0.0.0.0:$PORT --timeout 120 'backend.api.app:create_app()'"]
+
+# try to run on my local machine
