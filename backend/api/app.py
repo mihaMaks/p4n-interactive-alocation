@@ -443,6 +443,21 @@ def create_app(config=None):
             return jsonify(success=False, error="Mesh not found"), 404
         return jsonify(success=True, data=meta.to_dict())
 
+    @app.route("/api/meshes/<mesh_id>", methods=["DELETE"])
+    @require_maintainer
+    def delete_mesh(mesh_id):
+        deleted = mesh_store.delete(mesh_id)
+        if not deleted:
+            return jsonify(success=False, error="Mesh not found"), 404
+        return jsonify(success=True)
+
+    @app.route("/api/meshes/<mesh_id>/unpublish", methods=["POST"])
+    @require_maintainer
+    def unpublish_mesh(mesh_id):
+        meta = mesh_store.update(mesh_id, {"public": False})
+        if not meta:
+            return jsonify(success=False, error="Mesh not found"), 404
+        return jsonify(success=True, data=meta.to_dict())
     # ══════════════════════════════════════════════════════════════════
     # VEHICLES
     # ══════════════════════════════════════════════════════════════════

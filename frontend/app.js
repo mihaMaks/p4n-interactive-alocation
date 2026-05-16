@@ -296,15 +296,23 @@ class App {
         const isMaintainer = this.role === 'maintainer';
         c.innerHTML = filtered.map(m => {
             const inScene = this.viewer?.isMeshInScene(m.id);
-            const eyeBtn = isMaintainer
-                ? `<button class="btn-eye${inScene ? ' active' : ''}" data-toggle-mesh="${m.id}" title="${inScene ? 'Remove from viewer' : 'Add to viewer'}">${inScene ? '👁' : '👁‍🗨'}</button>`
-                : '';
             const publishBtn = isMaintainer && !m.public
                 ? `<button class="btn-publish" data-publish-mesh="${m.id}" title="Make mesh public">🌐 Publish</button>`
-                : (m.public ? '<span class="mesh-public-label" title="Public mesh">🌐</span>' : '');
+                : '';
+            const unpublishBtn = isMaintainer && m.public
+                ? `<button class="btn-publish" data-unpublish-mesh="${m.id}" title="Unpublish mesh">🔒 Unpublish</button>`
+                : '';
+            const deleteBtn = isMaintainer
+                ? `<button class="btn-publish" data-delete-mesh="${m.id}" title="Delete mesh">🗑 Delete</button>`
+                : '';
+            const publicLabel = !isMaintainer && m.public
+                ? '<span class="mesh-public-label" title="Public mesh">🌐</span>'
+                : '';
             return `<div class="mesh-item${inScene ? ' in-scene' : ''}" data-id="${m.id}">
-                ${eyeBtn}
                 ${publishBtn}
+                ${unpublishBtn}
+                ${deleteBtn}
+                ${publicLabel}
                 <div class="mesh-item-text">
                     <strong>${this._esc(m.description || m.filename)}</strong>
                     <small>${this._esc(m.location_id)} | ${m.algorithm}</small>
@@ -316,14 +324,13 @@ class App {
             el.addEventListener('click', () => this._selectMesh(el.closest('.mesh-item').dataset.id));
         });
 
-        // Eye toggle buttons (maintainer)
         c.querySelectorAll('[data-toggle-mesh]').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 this._toggleMeshInViewer(btn.dataset.toggleMesh);
             });
         });
-        // Publish buttons (maintainer)
+
         c.querySelectorAll('[data-publish-mesh]').forEach(btn => {
             btn.addEventListener('click', async (e) => {
                 e.stopPropagation();
@@ -333,7 +340,6 @@ class App {
                     const data = await res.json();
                     if (data.success) {
                         this._toast('Mesh published');
-                        // Update mesh in local list
                         const mesh = this.meshes.find(m => m.id === meshId);
                         if (mesh) mesh.public = true;
                         this._renderMeshList();
@@ -342,6 +348,48 @@ class App {
                     }
                 } catch {
                     this._toast('Failed to publish mesh', 'error');
+                }
+            });
+        });
+
+        c.querySelectorAll('[data-unpublish-mesh]').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                const meshId = btn.dataset.unpublishMesh;
+                try {
+                    const res = await this._api(`/api/meshes/${meshId}/unpublish`, { method: 'POST' });
+                    const data = await res.json();
+                    if (data.success) {
+                        this._toast('Mesh unpublished');
+                        const mesh = this.meshes.find(m => m.id === meshId);
+                        if (mesh) mesh.public = false;
+                        this._renderMeshList();
+                    } else {
+                        this._toast('Failed to unpublish mesh', 'error');
+                    }
+                } catch {
+                    this._toast('Failed to unpublish mesh', 'error');
+                }
+            });
+        });
+
+        c.querySelectorAll('[data-delete-mesh]').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                if (!confirm('Delete this mesh permanently?')) return;
+                const meshId = btn.dataset.deleteMesh;
+                try {
+                    const res = await this._api(`/api/meshes/${meshId}`, { method: 'DELETE' });
+                    const data = await res.json();
+                    if (data.success) {
+                        this._toast('Mesh deleted');
+                        this.meshes = this.meshes.filter(m => m.id !== meshId);
+                        this._renderMeshList();
+                    } else {
+                        this._toast(data.error || 'Delete failed', 'error');
+                    }
+                } catch {
+                    this._toast('Delete failed', 'error');
                 }
             });
         });

@@ -11,6 +11,7 @@ services:
       - "5009"
     volumes:
       - ./data:/app/data
+      - ./meshes:/app/meshes
       
   nginx:
     image: nginx:alpine
