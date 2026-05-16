@@ -1,7 +1,13 @@
-.PHONY: run test
+
+COMPOSE ?= docker-compose
+
+.PHONY: run logs test
 
 run:
-	. venv/bin/activate && python3 run_backend.py
+	$(COMPOSE) up -d --build
+
+logs:
+	$(COMPOSE) logs -f --tail=200
 
 test:
 	. venv/bin/activate && python3 -m pytest tests/ -v
