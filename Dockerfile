@@ -1,9 +1,14 @@
-# Use official Python image as base
+# Use official Python 3.11 image as base
 FROM python:3.11-slim
 
+# Install uv binary
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
 # Set environment variables
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    UV_LINK_MODE=copy \
+    PATH="/app/.venv/bin:$PATH"
 
 # Set work directory
 WORKDIR /app
@@ -20,9 +25,9 @@ RUN apt-get update && apt-get install -y \
 # Copy requirements
 COPY requirements.txt ./
 
-# Install Python dependencies
-RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt && \
+# Create a project virtual environment and install pinned dependencies with uv.
+RUN uv venv /app/.venv --python 3.11 && \
+    uv pip install --python /app/.venv/bin/python -r requirements.txt && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /root/.cache
 

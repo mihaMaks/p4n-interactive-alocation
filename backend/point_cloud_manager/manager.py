@@ -11,7 +11,9 @@ from typing import Optional
 
 import laspy
 import numpy as np
+
 import open3d as o3d
+
 
 
 class PointCloudManager:
@@ -150,6 +152,7 @@ class PointCloudManager:
         -------
         dict with ``mesh_filename``, ``meta_filename``, and full metadata.
         """
+
         path = self._laz_path(filename)
         with laspy.open(path) as fh:
             las = fh.read()
@@ -264,6 +267,7 @@ class PointCloudManager:
 
     def _transfer_colors(self, target_pts: np.ndarray, color_source_path: str) -> np.ndarray:
         """KDTree nearest-neighbour colour transfer from a colour source file."""
+
         with laspy.open(color_source_path) as fh:
             clas = fh.read()
 
